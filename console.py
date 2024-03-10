@@ -3,6 +3,7 @@ import shlex
 from models.base_model import BaseModel
 from models import storage
 
+
 class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
 
@@ -132,6 +133,7 @@ class HBNBCommand(cmd.Cmd):
             pass
         setattr(all_objects[key], attr_name, attr_value)
         storage.save()
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()

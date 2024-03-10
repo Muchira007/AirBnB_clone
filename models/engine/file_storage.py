@@ -1,6 +1,7 @@
 import json
 import os
 
+
 class FileStorage:
     __file_path = "file.json"
     __objects = {}
@@ -19,7 +20,6 @@ class FileStorage:
         serialized_objects = {}
         for key, value in self.__objects.items():
             serialized_objects[key] = value.to_dict()
-        
         with open(self.__file_path, 'w') as f:
             json.dump(serialized_objects, f)
 
