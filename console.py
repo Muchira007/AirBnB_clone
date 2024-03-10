@@ -2,6 +2,11 @@ import cmd
 import shlex
 from models.base_model import BaseModel
 from models import storage
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
@@ -30,26 +35,26 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, arg):
         """Creates a new instance of BaseModel"""
-        args = shlex.split(arg)
-        if not args:
+        if not arg:
             print("** class name missing **")
             return
+        args = arg.split()
         class_name = args[0]
-        if class_name not in globals():
+        if class_name not in {"User"}:
             print("** class doesn't exist **")
             return
-        new_instance = globals()[class_name]()
+        new_instance = eval(class_name)()
         new_instance.save()
         print(new_instance.id)
 
     def do_show(self, arg):
         """Prints the string representation of an instance"""
-        args = shlex.split(arg)
-        if not args:
+        if not arg:
             print("** class name missing **")
             return
+        args = arg.split()
         class_name = args[0]
-        if class_name not in globals():
+        if class_name not in {"User"}:
             print("** class doesn't exist **")
             return
         if len(args) < 2:
@@ -85,20 +90,19 @@ class HBNBCommand(cmd.Cmd):
             del all_objects[key]
             storage.save()
 
-    def do_all(self, arg):
-        """Prints all string representation of all instances"""
-        args = shlex.split(arg)
-        if args and args[0] not in globals():
+    def do_all(self, line):
+        """Prints all string representation of all instances based."""
+        args = line.split()
+        if len(args) == 0:
+            print(storage.all())
+        elif args[0] not in classes:
             print("** class doesn't exist **")
-            return
-        if args:
-            objects = storage.all(args[0])
-        elif args[0] not in globals():
-            print("** class doesn't exist **")
-            return
         else:
             objects = storage.all()
-        print([str(obj) for obj in objects.values()])
+            print(
+                    [str(obj) for obj in objects.values()
+                        if obj.__class__.__name__ == args[0]]
+                    )
 
     def do_update(self, arg):
         """Updates an instance based on the class name and id"""

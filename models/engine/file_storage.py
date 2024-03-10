@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+"""Module for FileStorage class."""
 import json
 import os
 
@@ -31,9 +33,15 @@ class FileStorage:
         """
         if os.path.exists(self.__file_path):
             with open(self.__file_path, 'r') as f:
-                serialized_objects = json.load(f)
-                for key, value in serialized_objects.items():
-                    class_name, obj_id = key.split('.')
-                    # Assume class_name is a valid class
-                    cls = globals()[class_name]
-                    self.__objects[key] = cls(**value)
+                try:
+
+                    serialized_objects = json.load(f)
+                    for key, value in serialized_objects.items():
+                        class_name, obj_id = key.split('.')
+                        if class_name in globals():
+                            cls = globals().get(class_name)
+                            self.__objects[key] = cls(**value)
+                        else:
+                            print(f"Warning: Class '{class_name}'not exist")
+                except ValueError:
+                    print("Error: Unable to decode JSON file.")
